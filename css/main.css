@@ -6,15 +6,26 @@
 /* Styles go here */
 
 .notification {
-  background: skyblue;
-  padding:10px;
-  border:2px solid black;
+  
+  padding-top:10px;
+  margin: 0;
+  
 }
 
 .results{
+	padding: 10px;
 	background-color:green;
 	border: 2px solid red;
 	width: 100%;
 	min-height: 100%;
 
+}
+.main-container{
+	margin: 0 auto;
+	padding-top: 5em;
+	padding-left: 12em;
+	
+}
+.myForm,.navigation{
+	padding-left: 20em;
 }
