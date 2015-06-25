@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Angular-Youtbe Search</title>
+    <title>Angular-Instagram Search</title>
     <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -18,14 +18,26 @@
 <body>
     <div class="mast-head">
         <img src="images/ng-instagram.png">
-        <p>Search for YouTube videos by keyword</p>
+        
     </div>
     <div ng-controller="MyController">
         <form ng-submit="searchInstagram(keyword)" name="myForm" novalidate>
+
             <input type="text" name="keyword" ng-model="keyword" required="" />
             <input type="submit" value="submit"  />
+            <div class="notification" ng-if="notification">
+               <p>Searching  for Instagram with photos tagged with {{keyword}}</p>
+            </div>
         </form>
-        <div class="results"  > <img ng-src="{{results}}" style="padding: 20px;">	</div>
+        <!-- <div id="imagediv"  > 	</div> -->
+        <form ng-submit="nextPage(keyword)" name="myNextForm" novalidate>
+
+            <input type="submit" value="Next" class="mySubmit"/>
+            
+        </form>
+        <div id="search-results" id="imagediv">
+                <a id="links"><img id="greatphoto"> </a>
+            </div>
     </div>
 </body>
 </html>
