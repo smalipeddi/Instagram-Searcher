@@ -1,122 +1,97 @@
-				var CORSDemo = angular.module('CORSDemo', []);
-				CORSDemo.config(function($httpProvider) {
-					$httpProvider.defaults.useXDomain = true;
-					delete $httpProvider.defaults.headers.common['X-Requested-With'];
-				}).controller('MyController', ['$scope', '$timeout', '$q', '$http', function($scope, $timeout, $q, $http) {
-					$scope.trustSrc = function(src) {
-						return $sce.trustAsResourceUrl(src);
-					};
+var CORSDemo = angular.module('CORSDemo', []);
+	CORSDemo.config(function($httpProvider) {
+		$httpProvider.defaults.useXDomain = true;
+		delete $httpProvider.defaults.headers.common['X-Requested-With'];
+	}).controller('MyController', ['$scope', '$timeout', '$q', '$http', function($scope, $timeout, $q, $http) {
+	
 
-					$scope.keyword = "";
-					$scope.searchInstagram = function(keyword) {
-						event.preventDefault();
-						$scope.keyword = keyword;
-						$scope.notification = true;
-						console.log($scope.keyword);
-						var url ="https://api.instagram.com/v1/tags/"+$scope.keyword+"/media/recent?client_id=2af3d14148d24e7aa47ba9c8820bb3fa&outputMode=json&callback=JSON_CALLBACK"
-						console.log(url);
-						$http({
-							method: 'JSONP',
-							url: url			
-						}).success(function(data) {
-							console.log(data.data.length);
-							
-							next_min_id = data.pagination.next_min_id;
-							console.log("MIN ID");
-							console.log(next_min_id);
-							next_max_id = data.pagination.next_max_id;
-							console.log("MAX ID");
-							console.log(next_max_id);
-							
-					  	//	next_url = data.pagination.next_url;
-					  	next_url = "https://api.instagram.com/v1/tags/"+$scope.keyword+ "/media/recent?callback=angular.callbacks._1&outputMode=json&client_id=2af3d14148d24e7aa47ba9c8820bb3fa&max_tag_id="+next_max_id;
-					  	prev_url = "https://api.instagram.com/v1/tags/"+$scope.keyword+ "/media/recent?callback=angular.callbacks._1&outputMode=json&client_id=2af3d14148d24e7aa47ba9c8820bb3fa&min_tag_id="+next_min_id;
-					  	console.log(next_url);
-					  	for(var i = 0 ; i < data.data.length; i ++){
-					  		img_src = data.data[i].images.thumbnail.url;
-					  		var toGo = data.data[i].link;
-								//console.log(img_src);
-								$("#greatphoto").attr("src", img_src);
-								$("#links").attr("href", toGo);
-								$('<a href="' + toGo + '"><img src="' + img_src + '" /></a>').appendTo('#search-results');
-							}
+	$scope.trustSrc = function(src) {
+	return $sce.trustAsResourceUrl(src);
+	};
 
-							return keyword,next_url;
-						}).error(function(data) {
-							$scope.results("There is error in retreiving data from instagram");
-						});
-					};
+	$('.next').hide();
+	$('.prev').hide();
+	$scope.keyword = "";
+	/*$scope.current_url ="";
+	$scope.prev_url="";
+	$scope.next_url = "";*/
+	
+	$scope.searchInstagram = function() {
+		$('.next').show();
+		console.log("CLICKED SEARCH")
+		//console.log("prev_url" + $scope.prev_url);
+		$scope.notification = true;
+		$scope.prev_url = "https://api.instagram.com/v1/tags/"+$scope.keyword+"/media/recent?"
+	    //console.log("current_url = "  + $scope.current_url);
+	    console.log("Enter ajax call for search Instagram");
+	    $scope.ajaxCall($scope.prev_url);
+	    console.log("Exit ajax call for search Instagram");
+	    
+	    
+	};
 
-					$scope.nextPage =function(keyword,next_url){
-						$( "#search-results" ).empty();
-				    	//$scope.next_url = data.pagination.next_url;
-				    	//console.log(data.pagination.next_url);
-				    	$scope.keyword = keyword;
-				    	$scope.notification = true;
-				    	console.log($scope.keyword);
-				    	var url = next_url;
-				    	console.log(url);
-				    	$http({
-				    		method: 'JSONP',
-				    		url: url			
-				    	}).success(function(data) {
-				    		console.log(data.data.length);
-				    		next_min_id = data.pagination.next_min_id;
-				    		console.log("MIN ID");
-				    		console.log(next_min_id);
-				    		next_max_id = data.pagination.next_max_id;
-				    		console.log("MAX ID");
-				    		console.log(next_max_id);
+	$scope.nextPage =function(){
+	$("#search-results").empty();
+	$('.prev').show();
+	console.log("CLICKED NEXT");
+	$scope.notification = true;
+	/*console.log($scope.keyword);*/
+	
+	 console.log("Enter ajax call for NEXT page");
+	    $scope.ajaxCall($scope.url);
 
-					  	//	next_url = data.pagination.next_url;
-					  	next_url = "https://api.instagram.com/v1/tags/"+$scope.keyword+ "/media/recent?callback=angular.callbacks._1&outputMode=json&client_id=2af3d14148d24e7aa47ba9c8820bb3fa&max_tag_id="+next_max_id;
-					  	prev_url = "https://api.instagram.com/v1/tags/"+$scope.keyword+ "/media/recent?callback=angular.callbacks._1&outputMode=json&client_id=2af3d14148d24e7aa47ba9c8820bb3fa&min_tag_id="+next_min_id;
-					  	console.log(prev_url);
+	    console.log("Exit ajax call for NEXT Page");
+	    
+	};
 
-				    		//next_url = data.pagination.next_url;
-				    		console.log(next_url);
-				    		for(var i = 0 ; i < data.data.length; i++){
-				    			img_src = data.data[i].images.thumbnail.url;
-				                var img = $('<img id="dynamic">'); //Equivalent: $(document.createElement('img'))
-				                img.attr('src', img_src);
-				                img.appendTo('#imagediv');
-				            }
-				            return keyword,prev_url;
+	$scope.prevPage =function(){
+	$("#search-results").empty();
+	console.log("CLICKED  PREV");
+    //$scope.prev_url = $scope.current_url;
+    //console.log("prev_ url = " +  $scope.prev_url);
+	//$scope.current_url = $scope.url;
+	//console.log("link to click on prev button");
+    //console.log($scope.current_url);
+	$scope.notification = true;
 
-				        }).error(function(data) {
-				        	console.log("There is error in retreiving data from instagram");
-				        });
-				    };
+ console.log("Enter ajax call for  Prev page`");
 
-				    $scope.prevPage =function(keyword){
-				    	$("#search-results").empty();
-				    	$scope.next_url = data.pagination.next_url;
-				    	console.log(data.pagination.next_url);
-				    	$scope.keyword = keyword;
-				    	$scope.notification = true;
-				    	console.log($scope.keyword);
-				    	var url = data.pagination.next_url;
-				    	console.log(url);
-				    	$http({
-				    		method: 'JSONP',
-				    		url: url			
-				    	}).success(function(data) {
-				    		console.log(data.data.length);
-				    		next_url = data.pagination.next_url;
-				    		console.log(next_url);
-				    		for(var i = 0 ; i < data.data.length; i ++){
-				    			img_src = data.data[i].images.thumbnail.url;
-				                var img = $('<img id="dynamic">'); //Equivalent: $(document.createElement('img'))
-				                img.attr('src', img_src);
-				                img.appendTo('#imagediv');
-				            }
+	$scope.ajaxCall($scope.prev_url);
+  console.log("Exit ajax call for prev page");
+	    
+	};
 
-				        }).error(function(data) {
-				        	console.log("There is error in retreiving data from instagram");
-				        });
-				    };
+	$scope.ajaxCall = function(url){
+	console.log("i am in ajax call");
+	console.log(url);
+    $scope.current_url = $scope.url;
+    
+    var request = {
+      client_id:'2af3d14148d24e7aa47ba9c8820bb3fa',
+      showSourceText: '1',
+      outputMode: 'json',
+      callback: "JSON_CALLBACK"
+    };
+    $http({
+      method: 'JSONP',
+      url: url,
 
+      params: request
+    }).success(function(data) {
+	console.log(data);
+	$scope.url = data.pagination.next_url;
+	/*console.log("NEXT _________________URL");
+	console.log($scope.url);
+	*/for(var i = 0 ; i < data.data.length; i ++){
+	img_src = data.data[i].images.thumbnail.url;
+	var toGo = data.data[i].link;
+	$("#greatphoto").attr("src", img_src);
+	$("#links").attr("href", toGo);
+	$('<a href="' + toGo + '"><img src="' + img_src + '" /></a>').appendTo('#search-results');
 
-
-
-				}]);
+	}
+	}).error(function(data) {
+	console.log("There is error in retreiving data from instagram");
+	});
+	}
+	}]);
